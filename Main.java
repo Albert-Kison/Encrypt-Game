@@ -8,8 +8,12 @@ public class Main {
         Random random = new Random();
 
         String[] paragraphs = {
-                "Hello, \n World!",
-                "Tip: Use the indexOf method to return the position of the first occurrence of specified character(s) in a string.\nejfke"
+                "The greatest glory in living lies \nnot in never falling, \nbut in rising every time we fall.",
+                "When you reach the end of your rope, \ntie a knot in it and hang on.",
+                "Don't judge each day by the harvest you reap \nbut by the seeds that you plant.",
+                "The future belongs to those \nwho believe in the beauty \nof their dreams.",
+                "Tell me and I forget. \nTeach me and I remember. \nInvolve me and I learn.",
+                "It is during our darkest moments \nthat we must focus \nto see the light."
         };
 
         String chosenString;
@@ -38,13 +42,14 @@ public class Main {
             chosenString = paragraphs[random.nextInt(paragraphs.length)];
         }
 
-
+        //debug
+        System.out.println(chosenString);
+        System.out.println();
 
 
         //Task 2
 
         String encryptedText = encryptText(chosenString);
-        System.out.println(chosenString);
 
 
 
@@ -64,6 +69,7 @@ public class Main {
         int SECONDS_TO_SOLVE = 1000;
 
         displayRules(SECONDS_TO_SOLVE);
+        System.out.println();
         System.out.println(encryptedText);
 
         //starts the timer
@@ -71,8 +77,10 @@ public class Main {
 
 
         while (true) {
+            System.out.println();
             System.out.println("Enter your answer: ");
             String userAnswer = getAnswer();
+            System.out.println();
 
 
             //handles the "help"
@@ -103,7 +111,7 @@ public class Main {
                     String replace = String.valueOf(Character.toUpperCase(userAnswer.charAt(0)));
                     encryptedText = erasePair(userAnswer, userMoves, encryptedText, cloneString, replace);
 
-                } else {
+                } else if (userAnswer.length() > 1) {
 
                     String replace = String.valueOf(userAnswer.charAt(0));
                     String replaceWith = String.valueOf(Character.toUpperCase(userAnswer.charAt(1)));
@@ -128,11 +136,13 @@ public class Main {
                         }
                     }
 
+                } else {
+                    System.out.println("Incorrect input. Please try again...");
                 }
             }
             System.out.println(encryptedText);
 
-            //debug: output
+            //displays the users steps
             for (String i: userMoves.keySet()) {
                 System.out.println(i + " > " + userMoves.get(i));
             }
@@ -161,51 +171,41 @@ public class Main {
         //for each letter there is an encoded one
         HashMap<Character, Character> encryptSet = new HashMap<Character, Character>();
 
+        //get the list of letters
+        ArrayList<Character> letters = new ArrayList<Character>();
+        for (int i = 0; i < 26; i++) {
+            letters.add(Character.toChars(97 + i)[0]);
+        }
+
         for (int i = 0; i < chosenString.length(); i++) {
 
             //check if the letter is already encoded
             //check if the character is not the space
             //check if the character is a letter
-            if (!encryptSet.containsKey(chosenString.charAt(i)) &&
+            if (!encryptSet.containsKey(Character.toLowerCase(chosenString.charAt(i))) &&
                     !String.valueOf(chosenString.charAt(i)).equals(" ") &&
                     Character.isAlphabetic((int)chosenString.charAt(i))) {
 
                 //random letter of a lower case
-                Character randomLetter = Character.toChars(random.nextInt(26) + 97)[0];
-                System.out.println(encryptSet.containsValue(randomLetter));     //debug
-
-                //check if the random letter already exists
-                //check if the letters are not the same
-                while(encryptSet.containsValue(randomLetter) ||
-                        Character.toLowerCase(chosenString.charAt(i)) == Character.toLowerCase(randomLetter)) {
-
-                    System.out.println("got in");   //debug
-
-                    //for the current letter assign the random one
-                    encryptSet.put(chosenString.charAt(i), randomLetter);
-
-                    randomLetter = Character.toChars(random.nextInt(26) + 97)[0];
+                Character randomLetter = letters.get(random.nextInt(letters.size()));
+                while (Character.toLowerCase(randomLetter) == Character.toLowerCase(chosenString.charAt(i))) {
+                    randomLetter = letters.get(random.nextInt(letters.size()));
                 }
+                letters.remove(randomLetter);
 
-                encryptSet.put(chosenString.charAt(i), randomLetter);
+                encryptSet.put(Character.toLowerCase(chosenString.charAt(i)), randomLetter);
             }
         }
 
-        System.out.println(encryptSet);     //debug
-
-        System.out.println(chosenString);   //debug
-
-        //debug: displays the encrypted pairs
+        //writes the encrypted letters to the string
         char[] chosenStringArr = chosenString.toCharArray();
         for (int i = 0; i < chosenStringArr.length; i++) {
             if (Character.isAlphabetic(chosenStringArr[i])) {
-                System.out.println(chosenStringArr[i] + "   " + encryptSet.get(chosenStringArr[i]));
-                chosenStringArr[i] = encryptSet.get(chosenStringArr[i]);
+                chosenStringArr[i] = encryptSet.get(Character.toLowerCase(chosenStringArr[i]));
             }
         }
         chosenString = String.valueOf(chosenStringArr);
 
-        System.out.println(chosenString);
         return chosenString;
     }
 
@@ -277,7 +277,14 @@ public class Main {
 
     public static void displayPreview(String[] paragraphs) {
         for (int i = 0; i < paragraphs.length; i++){
-            String firstLine = paragraphs[i].substring(0, paragraphs[i].indexOf("\n"));
+
+            String firstLine;
+            if (paragraphs[i].contains("\n")) {
+                firstLine = paragraphs[i].substring(0, paragraphs[i].indexOf("\n"));
+            } else {
+                firstLine = paragraphs[i];
+            }
+
             if (firstLine.length() > 50) {
                 //displays the line within 50 characters
                 firstLine = firstLine.substring(0, 49);
@@ -292,7 +299,7 @@ public class Main {
     public static void displayRules(int seconds) {
         System.out.println("To decrypt a letter, just type the letter you want to decrypt and the letter you want to replace it with.");
         System.out.println("To erase the pair, type the letter you replaced it with");
-        System.out.println("You have " + seconds + " to solve this");
+        System.out.println("You have " + seconds + " seconds to solve this");
     }
 
 
@@ -323,7 +330,6 @@ public class Main {
         //stores the available options to choose from
         ArrayList<String> options = getOptions(encryptedText, userMoves);
 
-        System.out.println(options);    //debug
 
         //gets the random letter from the available options
         Random random = new Random();
@@ -342,7 +348,6 @@ public class Main {
 
             }
         }
-        System.out.println(encryptedText);
 
         userMoves.put(replace, String.valueOf(replaceWith));
 
