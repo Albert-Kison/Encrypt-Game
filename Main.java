@@ -11,7 +11,7 @@ public class Main {
                 "The greatest glory in living lies \nnot in never falling, \nbut in rising every time we fall.",
                 "When you reach the end of your rope, \ntie a knot in it and hang on.",
                 "Don't judge each day by the harvest you reap \nbut by the seeds that you plant.",
-                "The future belongs to those \nwho believe in the beauty \nof their dreams.",
+                "The future belongs to those who believe in therty beauty \nof their dreams.",
                 "Tell me and I forget. \nTeach me and I remember. \nInvolve me and I learn.",
                 "It is during our darkest moments \nthat we must focus \nto see the light."
         };
